@@ -1,0 +1,23 @@
+<h1>Musicfinder</h1>
+
+<p>Hey <%= @user.name %>! It looks like your favorite genre is <%= @user.genre %>.</p>
+
+<p>I found this song that I think you might like:</p>
+
+<% title = finder(@user.genre,"title")%>
+<% artist = finder(@user.genre,"artist")%>
+
+<div class="music">"<%= title %>" by <%= artist %>.</div>
+
+<p><%= link_to 'Back', root_path %></p>
+
+<script type="text/javascript">
+	mixpanel.track("Found a song",{"Artist":"<%= artist %>","Title":"<%= title %>","Genre":"<%= @user.genre %>"});
+
+	mixpanel.identify("<%= @user.name %>");
+	mixpanel.people.set({
+	    "$first_name": "<%= @user.name %> ",
+	    "$created": "<%= Time.now.utc %>"
+	});
+
+</script>
