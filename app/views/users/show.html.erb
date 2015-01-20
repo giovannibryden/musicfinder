@@ -4,10 +4,16 @@
 
 <p>I found this song that I think you might like:</p>
 
-<% title = finder(@user.genre,"title")%>
-<% artist = finder(@user.genre,"artist")%>
+		<% title = finder(@user.genre,"title")%>
+<!-- 		<% artist = finder(@user.genre,"artist")%> -->
 
-<div class="music">"<%= title %>" by <%= artist %>.</div>
+<!-- <div class="music">
+	"<%= title %>" by <%= artist %>.
+</div> -->
+
+<div class="music">
+	<%= spotify(title,"song").html_safe %>
+</div>
 
 <p><%= link_to 'Back', root_path %></p>
 

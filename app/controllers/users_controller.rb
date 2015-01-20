@@ -1,7 +1,11 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  
+  require 'net/https'
+  require 'json'
 
+  before_action :set_user, only: [:show, :edit, :update, :destroy]
   helper_method :finder
+  helper_method :spotify
 
   # GET /users
   # GET /users.json
@@ -12,10 +16,33 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    def finder(genre,value)
 
-        require 'net/https'
-        require 'json'
+    def spotify(title,value)
+
+      # https://api.spotify.com/v1/search?q=mourning+air&type=track&market=US&limit=3
+      uri = URI('https://api.spotify.com/v1/search?q='+title+'&type=track&market=US&limit=1')
+      req = Net::HTTP::Get.new(uri)
+
+      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') {|http|
+        http.request(req)
+      }
+
+      code = res.code
+      res = res.body
+
+      if code ="200" then
+        if value == "song" then
+          uri = JSON.parse(res)['tracks']['items'].to_json(:only => ['uri'])[9..-4]
+          
+          # render html: '<b>html goes here<b/>'.html_safe
+          song = '<iframe src="https://embed.spotify.com/?uri='+uri+'" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>'.html_safe
+        elsif value == "image" then
+          # image = JSON.parse(res)['tracks']['items'].to_json(:only => ['images'])['url']
+        end
+      end
+    end
+
+    def finder(genre,value)
 
         rand = 1 + rand(999)
         index = rand.to_s
